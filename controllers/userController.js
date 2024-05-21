@@ -8,6 +8,10 @@ exports.create = async (req, res) => {
     res.status(422).json(isValid);
   }
   const { userName, password, email } = req.body;
+  const user = await userModel.findOne({ userName: userName });
+  if(user){
+    return res.status(422).json({ message: 'userName already used' });
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
   userModel.create({ userName, password: hashedPassword, email });
   res.status(200).json({

@@ -4,7 +4,7 @@ const v = new validator();
 const schema = {
   userName: {
     type: "string",
-    min: 5,
+    min: 3,
     max: 25,
   },
   password: {
