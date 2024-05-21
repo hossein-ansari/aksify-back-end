@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
     res.status(422).json(isValid);
   }
   const { userName, password } = req.body;
-  const user = await userModel.findOne({ userName: userName });
+  const user = await userModel.findOne({ userName: userName }).select('-__v');
   if(!user){
     return res.status(401).json({ message: 'userName not found' });
   }
