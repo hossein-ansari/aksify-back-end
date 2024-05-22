@@ -5,7 +5,7 @@ require('dotenv').config();
 require('./db')
 app.use(cors()); // Enable CORS
 app.use(express.json());
-
+app.use('/uploads', express.static('uploads'));
 const usersRouters = require('./Routers/userRouter')
 const subscriptionRouters = require('./Routers/subscriptionRouter')
 const productRouters = require('./Routers/productRouter')

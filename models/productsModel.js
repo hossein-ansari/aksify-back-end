@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema({
   name: {
     type: "String",
-    required: true,
     minLength: 2,
   },
-  images: { type: "array", items: 'any' },
+  images: { type: "array", items: 'any',required: "true", },
+  coverImage: { type: "String",required: "true",},
   tags: {
     type: [String],
     required: "true",

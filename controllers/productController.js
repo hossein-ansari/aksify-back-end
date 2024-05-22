@@ -7,9 +7,18 @@ exports.create = async (req, res) => {
       massage: "data is not valid",
     });
   }
-  const { name, images, tags } = req.body;
+  const { name, tags } = req.body;
+  const coverImagePath = req.files["coverImage"][0].path;
+  const productImagesPaths = req.files["productImages"].map(
+    (file) => file.path
+  );
   try {
-    const products = await productModel.create({ name, images, tags });
+    const products = await productModel.create({
+      name,
+      coverImage: coverImagePath,
+      images: productImagesPaths,
+      tags,
+    });
     res
       .status(200)
       .json({ massage: `product ${name} created`, data: products });
