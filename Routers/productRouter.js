@@ -1,7 +1,7 @@
 const express = require("express");
 const productRouter = express.Router();
 const productController = require("../controllers/productController");
-const upload = require('../productUploadImgConfig/config')
+const upload = require('../uploadersConfig/productConfig')
 productRouter.post(
   "/create",
   upload.fields([
@@ -11,5 +11,7 @@ productRouter.post(
   productController.create
 );
 productRouter.get("/getAll", productController.getAll);
+productRouter.get("/getOne/:id", productController.getOne);
+
 
 module.exports = productRouter;

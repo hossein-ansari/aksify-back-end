@@ -9,3 +9,14 @@ exports.getAll = async (req, res) => {
     res.status(500).json({ error: " server error" });
   }
 };
+exports.create = async (req, res) => {
+  try {
+    const subscriptionCover = req.files["coverImage"][0].path;
+    const { name, price, limitExport } = req.body;
+    const subscription = subscriptionModel.create({ name, price, limitExport, coverImage:subscriptionCover });
+    res.status(200).json(subscription);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: " server error" });
+  }
+};

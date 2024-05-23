@@ -27,6 +27,7 @@ exports.create = async (req, res) => {
   }
 };
 exports.getAll = async (req, res) => {
+
   try {
     const products = await productModel.find({});
     if (!products) {
@@ -37,3 +38,16 @@ exports.getAll = async (req, res) => {
     res.status(404).json({ error: "server error", error });
   }
 };
+exports.getOne = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const products = await productModel.findById(id);
+    if (!products) {
+      res.status(404).json({ massage: "not found" });
+    }
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(404).json({ error: "server error", error });
+  }
+};
+

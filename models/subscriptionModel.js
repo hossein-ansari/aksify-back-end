@@ -5,6 +5,18 @@ const schema = mongoose.Schema({
     type: "String",
     required: "true",
   },
+  coverImage: {
+    type: "String",
+    required: "true",
+  },
+  limitExport: {
+    type: "Number",
+    required: "true",
+  },
+  price: {
+    type: "Number",
+    required: "true",
+  },
 
 });
 const subscriptionModel = mongoose.model('subscriptions',schema)
