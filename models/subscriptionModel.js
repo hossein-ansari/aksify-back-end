@@ -13,6 +13,10 @@ const schema = mongoose.Schema({
     type: "Number",
     required: "true",
   },
+  saveImageCount: {
+    type: "Number",
+    required: "true",
+  },
   price: {
     type: "Number",
     required: "true",

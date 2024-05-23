@@ -12,8 +12,14 @@ exports.getAll = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const subscriptionCover = req.files["coverImage"][0].path;
-    const { name, price, limitExport } = req.body;
-    const subscription = subscriptionModel.create({ name, price, limitExport, coverImage:subscriptionCover });
+    const { name, price, limitExport, saveImageCount } = req.body;
+    const subscription = await subscriptionModel.create({
+      name,
+      price,
+      limitExport,
+      coverImage: subscriptionCover,
+      saveImageCount,
+    });
     res.status(200).json(subscription);
   } catch (error) {
     console.error(error);

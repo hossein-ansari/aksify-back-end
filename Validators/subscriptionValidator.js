@@ -14,6 +14,9 @@ const schema = {
   price: {
     type: "Number",
   },
+  saveImageCount:{
+    type:"Number"
+  }
 };
 const check = v.compile(schema);
 module.exports = check;
