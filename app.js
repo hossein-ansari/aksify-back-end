@@ -9,11 +9,15 @@ app.use('/uploads', express.static('uploads'));
 const usersRouters = require('./Routers/userRouter')
 const subscriptionRouters = require('./Routers/subscriptionRouter')
 const productRouters = require('./Routers/productRouter')
+const imageUploadedByUserRouter = require('./Routers/imageUploadedByUserRouter')
+
 
 
 app.use('/users/',usersRouters)
 app.use('/subscriptions/' , subscriptionRouters)
 app.use('/products/',productRouters)
+app.use('/imageUpload/',imageUploadedByUserRouter)
+
 app.listen(process.env.port, ()=>{
     console.log('back end is run');
 })
