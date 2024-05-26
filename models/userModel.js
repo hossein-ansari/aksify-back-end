@@ -19,9 +19,9 @@ const schema = mongoose.Schema({
     maxLength: 50,
   },
   subscriptionType: {
-    type: "String",
+    type: "Object",
     required: "false",
-    default: 'member'
+    items:'any'
   },
 });
 const userModel = mongoose.model('users',schema)

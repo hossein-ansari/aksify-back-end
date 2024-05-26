@@ -16,6 +16,10 @@ const schema = {
     min: 12,
     max: 50,
   },
+  subscriptionType: {
+    type: "object",
+    items:'any'
+  },
 };
 const check = v.compile(schema);
 module.exports = check;
