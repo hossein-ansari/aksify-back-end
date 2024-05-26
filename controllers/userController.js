@@ -61,7 +61,7 @@ exports.update = async (req, res) => {
   try {
     const nweUser = await userModel.findByIdAndUpdate(user[0]._id, {
       subscriptionType: { name, limitExport, saveImageCount },
-    });
+    }).select('-password');
     res.status(200).json(nweUser)
   } catch (err) {
     res.status(400).json(err)
