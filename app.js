@@ -10,6 +10,8 @@ const usersRouters = require('./Routers/userRouter')
 const subscriptionRouters = require('./Routers/subscriptionRouter')
 const productRouters = require('./Routers/productRouter')
 const imageUploadedByUserRouter = require('./Routers/imageUploadedByUserRouter')
+const tagsRouter = require('./Routers/tagsRouter')
+
 
 
 
@@ -17,6 +19,8 @@ app.use('/users/',usersRouters)
 app.use('/subscriptions/' , subscriptionRouters)
 app.use('/products/',productRouters)
 app.use('/imageUpload/',imageUploadedByUserRouter)
+app.use('/tags/',tagsRouter)
+
 
 app.listen(process.env.port, ()=>{
     console.log('back end is run');

@@ -50,4 +50,17 @@ exports.getOne = async (req, res) => {
     res.status(404).json({ error: "server error", error });
   }
 };
-
+exports.searchItems = async (req, res) => {
+  try {
+      const query = req.query.word;
+      const items = await productModel.find({
+        $or: [
+          { name: { $regex: query, $options: 'i' } }, // Case-insensitive regex search on the name field
+          { tags: { $elemMatch: { $regex: query, $options: 'i' } } }, // Case-insensitive regex search within the tags array
+      ],
+      });
+      res.json(items);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};

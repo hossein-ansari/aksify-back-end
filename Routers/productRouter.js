@@ -12,6 +12,8 @@ productRouter.post(
 );
 productRouter.get("/getAll", productController.getAll);
 productRouter.get("/getOne/:id", productController.getOne);
+productRouter.get("/searchItems", productController.searchItems);
+
 
 
 module.exports = productRouter;
