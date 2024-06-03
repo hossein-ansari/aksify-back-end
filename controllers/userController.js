@@ -3,6 +3,10 @@ const { isValidObjectId } = require("mongoose");
 const Validator = require("../Validators/userValidator");
 const subscriptionModel = require("../models/subscriptionModel");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const generateToken = (user) => {
+  return jwt.sign({id}, process.env.SECRET_KEY, { expiresIn: '72h' });
+};
 exports.create = async (req, res) => {
   const isValid = Validator(req.body);
   if (!isValid) {
@@ -14,7 +18,13 @@ exports.create = async (req, res) => {
     return res.status(422).json({ message: "userName already used" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  userModel.create({ userName, password: hashedPassword, email });
+  const userCreated = await userModel.create({ userName, password: hashedPassword, email });
+  const token = generateToken(userCreated._id);
+  res.cookie('jwt', token, {
+    httpOnly: true,
+    sameSite: 'strict'
+  });
+  res.json({ message: 'Logged in successfully' });
   res.status(200).json({
     massage: "user created",
   });
@@ -35,7 +45,11 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "password ir wrong" });
     }
-
+    const token = generateToken(user._id);
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      sameSite: 'strict'
+    });
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
 
@@ -66,4 +80,7 @@ exports.update = async (req, res) => {
   } catch (err) {
     res.status(400).json(err)
   }
+};
+exports.getUserData = (req, res) => {
+  res.json({ user: req.user });
 };
