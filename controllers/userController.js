@@ -3,9 +3,9 @@ const { isValidObjectId } = require("mongoose");
 const Validator = require("../Validators/userValidator");
 const subscriptionModel = require("../models/subscriptionModel");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
-const generateToken = (user) => {
-  return jwt.sign({id}, process.env.SECRET_KEY, { expiresIn: '72h' });
+const jwt = require("jsonwebtoken");
+const generateToken = (id,userName,subscriptionType) => {
+  return jwt.sign({ id:id,userName:userName,subscriptionType:subscriptionType }, process.env.SECRET_KEY, { expiresIn: "72h" });
 };
 exports.create = async (req, res) => {
   const isValid = Validator(req.body);
@@ -18,13 +18,16 @@ exports.create = async (req, res) => {
     return res.status(422).json({ message: "userName already used" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userCreated = await userModel.create({ userName, password: hashedPassword, email });
-  const token = generateToken(userCreated._id);
-  res.cookie('jwt', token, {
-    httpOnly: true,
-    sameSite: 'strict'
+  const userCreated = await userModel.create({
+    userName,
+    password: hashedPassword,
+    email,
   });
-  res.json({ message: 'Logged in successfully' });
+  const token = generateToken(user._id,user.userName,user.subscriptionType);
+
+  res.cookie("jwt", token, {
+    maxAge: 24 * 60 * 60 * 1000,
+  });
   res.status(200).json({
     massage: "user created",
   });
@@ -45,15 +48,11 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "password ir wrong" });
     }
-    const token = generateToken(user._id);
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      sameSite: 'strict'
+    const token = generateToken(user._id,user.userName,user.subscriptionType);
+    res.cookie("jwt", token, {
+      maxAge: 24 * 60 * 60 * 1000,
     });
-    const userWithoutPassword = { ...user._doc };
-    delete userWithoutPassword.password;
-
-    return res.status(200).json(userWithoutPassword);
+    res.status(200).json({ massage: "logging in" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal server error" });
@@ -73,13 +72,24 @@ exports.update = async (req, res) => {
     return res.status(401).json({ message: "userName not found" });
   }
   try {
-    const nweUser = await userModel.findByIdAndUpdate(user[0]._id, {
-      subscriptionType: { name, limitExport, saveImageCount },
-    }).select('-password');
-    res.status(200).json(nweUser)
+    const nweUser = await userModel
+      .findByIdAndUpdate(user[0]._id, {
+        subscriptionType: { name, limitExport, saveImageCount },
+      })
+      .select("-password");
+    res.status(200).json(nweUser);
   } catch (err) {
-    res.status(400).json(err)
+    res.status(400).json(err);
   }
+};
+exports.verifyToken = async (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (!token) return res.sendStatus(401);
+  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
 };
 exports.getUserData = (req, res) => {
   res.json({ user: req.user });

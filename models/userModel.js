@@ -20,9 +20,14 @@ const schema = mongoose.Schema({
   },
   subscriptionType: {
     type: "Object",
-    required: "false",
-    items:'any'
+    required: false,
+    default: {
+      name: "member",
+      limitExport: 20,
+      saveImageCount: 3,
+    },
+    items: "any",
   },
 });
-const userModel = mongoose.model('users',schema)
-module.exports = userModel
+const userModel = mongoose.model("users", schema);
+module.exports = userModel;
