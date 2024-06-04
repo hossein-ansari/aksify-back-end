@@ -1,5 +1,8 @@
 const tagsModel = require("../models/tagsModel");
 const tagsValidator = require("../Validators/tagsValidator");
+const NodeCache = require("node-cache");
+const client = new NodeCache();
+
 exports.create = async (req, res) => {
     const isValid = tagsValidator(req.body);
     if (!isValid) {
@@ -18,10 +21,16 @@ exports.create = async (req, res) => {
   }
 };
 exports.getAll = async (req, res) => {
-  const key = 'tags';
   try {
+    const key = 'tags';
+    let cachedData = client.get(key);
+    if (cachedData) {
+      const data = JSON.parse(cachedData);
+      return res.json(data);
+    } 
     const data = await tagsModel.find({});
-    res.status(200).json(data);
+    client.set(key, JSON.stringify(data), 3600);
+    return res.status(200).json(data); 
   } catch (err) {
     res.status(400).json(err);
   }

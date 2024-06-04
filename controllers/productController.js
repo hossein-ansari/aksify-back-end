@@ -30,40 +30,35 @@ exports.create = async (req, res) => {
 };
 exports.getAll = async (req, res) => {
   try {
-    const key = 'AllProduct';
+    const key = "AllProduct";
     let cachedData = client.get(key);
     if (cachedData) {
-      console.log('cache');
       const data = JSON.parse(cachedData);
-      return res.json(data); // Use return to exit after sending the response
-    } 
+      return res.json(data);
+    }
     const products = await productModel.find({});
     client.set(key, JSON.stringify(products), 3600);
-    return res.status(200).json(products); // Use return to exit after sending the response
-
+    return res.status(200).json(products);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" }); // Use return to exit after sending the response
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 exports.getOne = async (req, res) => {
   const id = req.params.id;
-  const key = "oneProduct";
-  const cachedData = await client.get(key);
   try {
+    const key = "oneProduct";
+    const cachedData = client.get(key);
     if (cachedData) {
       const data = JSON.parse(cachedData);
-      res.json(data);
-    } else {
-      const products = await productModel.findById(id);
-      client.set(key, JSON.stringify(products), "EX", 3600);
-      res.status(200).json(products);
+      console.log('cash')
+      return res.json(data);
     }
-    if (!products) {
-      res.status(404).json({ massage: "not found" });
-    }
+    const products = await productModel.findById(id);
+    client.set(key, JSON.stringify(products), "EX", 3600);
+    return res.status(200).json(products);
   } catch (error) {
-    res.status(404).json({ error: "server error", error });
+    return res.status(404).json({ error: "server error", error });
   }
 };
 exports.searchItems = async (req, res) => {
