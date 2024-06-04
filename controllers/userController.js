@@ -4,6 +4,7 @@ const Validator = require("../Validators/userValidator");
 const subscriptionModel = require("../models/subscriptionModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 const generateToken = (id,userName,subscriptionType) => {
   return jwt.sign({ id:id,userName:userName,subscriptionType:subscriptionType }, process.env.SECRET_KEY, { expiresIn: "72h" });
 };
@@ -91,6 +92,6 @@ exports.verifyToken = async (req, res, next) => {
     next();
   });
 };
-exports.getUserData = (req, res) => {
+exports.getUserData = async (req, res) => {
   res.json({ user: req.user });
 };

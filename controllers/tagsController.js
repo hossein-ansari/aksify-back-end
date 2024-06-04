@@ -18,6 +18,7 @@ exports.create = async (req, res) => {
   }
 };
 exports.getAll = async (req, res) => {
+  const key = 'tags';
   try {
     const data = await tagsModel.find({});
     res.status(200).json(data);
