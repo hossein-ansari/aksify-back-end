@@ -6,7 +6,7 @@ const schema = {
   images: { type: "array", items: "any" },
   shapes: { type: "array", items: "any" },
   circles: { type: "array", items: "any" },
-  backGroundImage: { type: "string" },
+  backGroundImage: { type: "object" },
 };
 const check = v.compile(schema);
 module.exports = check;

@@ -5,7 +5,7 @@ const schema = mongoose.Schema({
   images: { type: "array", items: "any", required: "true" },
   shapes: { type: "array", items: "any", required: "true" },
   circles: { type: "array", items: "any", required: "true" },
-  backGroundImage: { type: "String", required: "true" },
+  backGroundImage: { type: "object", required: "true" },
 });
 const productsModel = mongoose.model("lastChangesUser", schema);
 module.exports = productsModel;

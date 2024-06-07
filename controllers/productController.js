@@ -51,7 +51,6 @@ exports.getOne = async (req, res) => {
     const cachedData = client.get(key);
     if (cachedData) {
       const data = JSON.parse(cachedData);
-      console.log('cash')
       return res.json(data);
     }
     const products = await productModel.findById(id);
@@ -73,5 +72,14 @@ exports.searchItems = async (req, res) => {
     res.json(items);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+exports.getOneByImg = async (req, res) => {
+  const {coverImage} = req.params
+  try {
+    const image = await productModel.find({coverImage:coverImage})
+    res.status(200).json(image);
+  } catch (err) {
+    res.status(400).json(err);
   }
 };
