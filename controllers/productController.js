@@ -47,14 +47,7 @@ exports.getAll = async (req, res) => {
 exports.getOne = async (req, res) => {
   const id = req.params.id;
   try {
-    const key = "oneProduct";
-    const cachedData = client.get(key);
-    if (cachedData) {
-      const data = JSON.parse(cachedData);
-      return res.json(data);
-    }
     const products = await productModel.findById(id);
-    client.set(key, JSON.stringify(products), "EX", 3600);
     return res.status(200).json(products);
   } catch (error) {
     return res.status(404).json({ error: "server error", error });

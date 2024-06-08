@@ -5,8 +5,12 @@ const subscriptionModel = require("../models/subscriptionModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const generateToken = (id,userName,subscriptionType) => {
-  return jwt.sign({ id:id,userName:userName,subscriptionType:subscriptionType }, process.env.SECRET_KEY, { expiresIn: "72h" });
+const generateToken = (id, userName, subscriptionType) => {
+  return jwt.sign(
+    { id: id, userName: userName, subscriptionType: subscriptionType },
+    process.env.SECRET_KEY,
+    { expiresIn: "72h" }
+  );
 };
 exports.create = async (req, res) => {
   const isValid = Validator(req.body);
@@ -24,7 +28,7 @@ exports.create = async (req, res) => {
     password: hashedPassword,
     email,
   });
-  const token = generateToken(user._id,user.userName,user.subscriptionType);
+  const token = generateToken(user._id, user.userName, user.subscriptionType);
 
   res.cookie("jwt", token, {
     maxAge: 24 * 60 * 60 * 1000,
@@ -49,7 +53,7 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "password ir wrong" });
     }
-    const token = generateToken(user._id,user.userName,user.subscriptionType);
+    const token = generateToken(user._id, user.userName, user.subscriptionType);
     res.cookie("jwt", token, {
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -79,6 +83,40 @@ exports.update = async (req, res) => {
       })
       .select("-password");
     res.status(200).json(nweUser);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+exports.decreaseExport = async (req, res, next) => {
+  const { userName } = req.params;
+  const user = await userModel.findOne({ userName: userName });
+  if (!user) {
+    return res.status(401).json({ message: "userName not found" });
+  }
+  const data = user.subscriptionType;
+  try {
+    const updatedUser = await userModel
+      .findByIdAndUpdate(
+        user._id,
+        {
+          $set: {
+            'subscriptionType.limitExport': data.limitExport - 1,
+          },
+        },
+        { new: true }
+      )
+      .select('-password');
+
+    const token = generateToken(
+      updatedUser._id,
+      updatedUser.userName,
+      updatedUser.subscriptionType
+    );
+    res.cookie('jwt', token, {
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({ user: updatedUser });
   } catch (err) {
     res.status(400).json(err);
   }

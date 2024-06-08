@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
 exports.getOneLast = async (req, res) => {
   try {
     const { id } = req.params;
-    const item = await lastChangesModel.findById(id).select('-userId -backGroundImage -__v');
+    const item = await lastChangesModel.findById(id).select('-userId -__v');
     return res.status(200).json(item);
   } catch (error) {
     return res.status(500).json({ error: error });

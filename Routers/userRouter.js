@@ -6,6 +6,6 @@ usersRouters.post("/create",userController.create )
 usersRouters.post("/login",userController.login )
 usersRouters.put("/update",userController.update )
 usersRouters.get('/user-data', userController.verifyToken, userController.getUserData);
-
+usersRouters.put("/decreaseExport/:userName",userController.decreaseExport,userController.getUserData )
 
 module.exports = usersRouters;
