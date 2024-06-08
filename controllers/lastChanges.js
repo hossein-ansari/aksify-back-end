@@ -1,9 +1,15 @@
 const lastChangesModel = require("../models/lastChanges");
+const userModel = require("../models/userModel");
+
 const Validator = require("../Validators/lastChanges");
 exports.getOne = async (req, res) => {
+  const { userId } = req.params;
+  const user = await userModel.findById(userId)
   try {
-    const { userId } = req.params;
-    const allChanges = await lastChangesModel.find({ userId: userId });
+    const allChanges = await lastChangesModel
+      .find({ userId: userId })
+      .sort({ _id: -1 })
+      .limit(user.subscriptionType.saveImageCount);
     return res.status(200).json(allChanges);
   } catch (error) {
     return res.status(500).json({ error: error });
@@ -34,11 +40,9 @@ exports.update = async (req, res) => {
     res.status(422).json(isValid);
   }
   try {
-    const id = req.params.id
+    const id = req.params.id;
     const { userId, images, shapes, circles, backGroundImage } = req.body;
-    const lastChanges = await lastChangesModel.findByIdAndUpdate(
-      id,
-      {
+    const lastChanges = await lastChangesModel.findByIdAndUpdate(id, {
       userId,
       images,
       shapes,
@@ -53,7 +57,7 @@ exports.update = async (req, res) => {
 exports.getOneLast = async (req, res) => {
   try {
     const { id } = req.params;
-    const item = await lastChangesModel.findById(id).select('-userId -__v');
+    const item = await lastChangesModel.findById(id).select("-userId -__v");
     return res.status(200).json(item);
   } catch (error) {
     return res.status(500).json({ error: error });
